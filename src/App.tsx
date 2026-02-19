@@ -1,51 +1,55 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
-type Pokemon = {
+type Character = {
   id: number;
   name: string;
-  sprites: {
-    front_default: string;
-  };
-  types: {
-    type: { name: string };
-  }[];
+  status: string;
+  species: string;
+  image: string;
 };
 
 export default function App() {
   const [id, setId] = useState<number>(1);
-  const [pokemon, setPokemon] = useState<Pokemon | null>(null);
+  const [character, setCharacter] = useState<Character | null>(null);
 
   useEffect(() => {
-    fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
+    fetch(`https://rickandmortyapi.com/api/character/${id}`)
       .then((res) => res.json())
-      .then((data) => setPokemon(data));
+      .then((data) => setCharacter(data));
   }, [id]);
 
   return (
-    <div className="app">
-      <h2>Pokédex</h2>
+    <main className="app">
+      <h2>Rick & Morty Characters</h2>
 
       <div className="controls">
         <button onClick={() => id > 1 && setId(id - 1)}>⬅ Anterior</button>
         <button onClick={() => setId(id + 1)}>Siguiente ➡</button>
       </div>
 
-      {pokemon && (
-        <div className="pokemon-card">
+      {character && (
+        <div className="character-card">
           <h3>
-            #{pokemon.id} {pokemon.name}
+            #{character.id} {character.name}
           </h3>
 
           <img
-            src={pokemon.sprites.front_default}
-            alt={pokemon.name}
-            width={150}
+            src={character.image}
+            alt={character.name}
+            width={180}
+            style={{ borderRadius: 10 }}
           />
 
-          <p>Tipos: {pokemon.types.map((t) => t.type.name).join(", ")}</p>
+          <p>
+            <strong>Status:</strong> {character.status}
+          </p>
+
+          <p>
+            <strong>Species:</strong> {character.species}
+          </p>
         </div>
       )}
-    </div>
+    </main>
   );
 }
